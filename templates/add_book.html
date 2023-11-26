@@ -1,10 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+{% block zawartosc %}
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="title" placeholder="title">
+    <select name="author">
+        {% for autor in authors %}
+        <option value="{{ autor.id }}">{{ autor }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit">
+</form>
+{% endblock %}

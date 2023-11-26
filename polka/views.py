@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
-from polka.models import Person
+from polka.models import Person, Book
 
 def index(request):
     return render(request, 'base.html')
@@ -38,7 +38,7 @@ def dodaj_osobe(request):
         nazwisko = request.POST['last_name']
         p = Person (first_name=imie, last_name=nazwisko)
         p.save()
-        return HttpResponse(f'probujesz dodac {imie} {nazwisko} do bazy')
+        return render(request, 'osobanew.html', context={'osoba':p})
 
 
 def wyswietlanie_osob(request):
@@ -48,3 +48,26 @@ def wyswietlanie_osob(request):
 def osoba(request, id):
     o = Person.objects.get(id=id)
     return render(request, 'o.html', {'osoba':o})
+
+
+def add_book(request):
+    if request.method == "GET":
+        authors = Person.objects.all()
+        response = render(request, 'add_book.html', context={'authors':authors})
+        return response
+    else:
+        title = request.POST['title']
+        author_id = request.POST.get('author')
+        autor = Person.objects.get(id=author_id)
+        p = Book(title=title, author=autor)
+        p.save()
+        return render(request, 'booknew.html', context={'book':p})
+        # return HttpResponse(f'probujesz dodac książkę o nazwie {title} i autorze{author} do bazy')
+
+def look_book(request):
+    books = Book.objects.all()
+    return render(request, 'books.html', context={'books':books})
+
+def bookid(request, id):
+    b = Book.objects.get(id=id)
+    return render(request, 'bookid.html', {'book':b})

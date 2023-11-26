@@ -27,5 +27,8 @@ urlpatterns = [
     path("dodaj_osobe/", views.dodaj_osobe),
     path('osoby/', views.wyswietlanie_osob),
     path('osoby/<int:id>/', views.osoba),
-    path('', views.index)
+    path('', views.index),
+    path('add_book/', views.add_book),
+    path('books/', views.look_book),
+    path('bookid/<int:id>/', views.bookid)
 ]

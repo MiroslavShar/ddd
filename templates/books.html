@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block zawartosc %}
+Książki - <br>
+<ul>
+    {% for p in books %}
+        <li><a href="/bookid/{{ p.id }}/">{{ p.id }} {{ p.title }} {{ p.author }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
