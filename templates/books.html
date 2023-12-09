@@ -1,5 +1,16 @@
 {% extends 'base.html' %}
 {% block zawartosc %}
+    <form>
+    <input type="text" name="title" placeholder="Tytuł">
+    <select name="author">
+        <option value="">-----------</option>
+        {% for author in author %}
+        <option value="{{ author.id }}"> {{ author }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit">
+    </form>
+
 Książki - <br>
 <ul>
     {% for p in books %}

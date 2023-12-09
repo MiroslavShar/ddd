@@ -43,6 +43,12 @@ def dodaj_osobe(request):
 
 def wyswietlanie_osob(request):
     osoby = Person.objects.all()
+    first_name = request.GET.get('first_name', '')
+    last_name = request.GET.get('last_name', '')
+    if first_name != '':
+        osoby = osoby.filter(first_name__icontains=first_name)
+    if last_name != '':
+        osoby = osoby.filter(last_name__icontains=last_name)
     return render(request, 'Cosby.html', context={'persons':osoby})
 
 def osoba(request, id):
@@ -66,7 +72,13 @@ def add_book(request):
 
 def look_book(request):
     books = Book.objects.all()
-    return render(request, 'books.html', context={'books':books})
+    author = Person.objects.all()
+    author_id = request.GET.get('author', '')
+    title = request.GET.get('title', '')
+    if author_id != '':
+        books = books.filter(author_id = author_id)
+    books = books.filter(title__icontains = title)
+    return render(request, 'books.html', context={'books':books, 'author':author})
 
 def bookid(request, id):
     b = Book.objects.get(id=id)
@@ -83,4 +95,17 @@ def add_publisher(request):
         p = Publisher(name=name, city=city)
         p.save()
         return render(request, 'publishernew.html', context={'publisher': p})
-        # return HttpResponse(f'probujesz dodac książkę o nazwie {title} i autorze{author} do bazy')
+
+def publisher(request):
+    publishers = Publisher.objects.all()
+    name = request.GET.get('name', '')
+    city = request.GET.get('city', '')
+    if city != '':
+        publishers = publishers.filter(city__icontains=city)
+    if name != '':
+        publishers = publishers.filter(name__icontains=name)
+    return render(request, 'publishers.html', context={'publishers': publishers})
+
+
+
+

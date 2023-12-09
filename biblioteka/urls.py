@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 
 from polka import views
+from accounts import views as account_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,5 +32,8 @@ urlpatterns = [
     path('add_book/', views.add_book),
     path('books/', views.look_book),
     path('bookid/<int:id>/', views.bookid),
-    path('add_publisher/', views.add_publisher)
+    path('add_publisher/', views.add_publisher),
+    path('publishers/', views.publisher),
+    path('login/', account_view.login)
+
 ]

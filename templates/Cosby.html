@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 {% block zawartosc %}
+
+<form>
+    Użyj naszej wyszukiwarki
+    <input type="text" name="first_name" placeholder="Imię">
+    <input type="text" name="last_name" placeholder="Nazwisko">
+    <input type="submit">
+
+</form>
+
 persons - <br>
 <ul>
     {% for p in persons %}

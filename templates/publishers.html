@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block zawartosc %}
+<form>
+    Użyj naszej wyszukiwarki
+    <input type="text" name="name" placeholder="Nazwa wydawnictwa">
+    <input type="text" name="city" placeholder="Miasto">
+    <input type="submit">
+
+</form>
+
+
+Publishers - <br>
+
+<ul>
+    {% for p in publishers %}
+        <li><a>{{ p.id }} {{ p.name }} {{ p.city }}</a></li>
+    {% endfor %}
+
+</ul>
+{% endblock %}
