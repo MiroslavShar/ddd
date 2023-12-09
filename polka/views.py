@@ -1,11 +1,17 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
-from polka.models import Person, Book, Publisher
+from polka.models import Person, Book, Publisher, Cart
+
 
 def index(request):
-    return render(request, 'base.html')
+    user_id = request.session.get('user_id')
+    if user_id is not None:
+        user = Person.objects.get(pk = user_id)
+    else:
+        user = "dupa"
+    return render(request, 'base.html', {'osoba' : user})
 
 def hello_django(request):
     return HttpResponse("Witaj Django")
@@ -106,6 +112,15 @@ def publisher(request):
         publishers = publishers.filter(name__icontains=name)
     return render(request, 'publishers.html', context={'publishers': publishers})
 
+def add_book_to_cart(request, book_id):
+    user_id = request.session.get('user_id')
+    if user_id is None:
+        return redirect(f'/login/?next=/add_book_to_cart/{book_id}')
+    book = Book.objects.get(pk=book_id)
+    user = Person.objects.get(pk=user_id)
+    cart, created = Cart.objects.get_or_create(user=user)
+    cart.books.add(book)
+    return redirect('/books/')
 
 
 

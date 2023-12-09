@@ -34,6 +34,7 @@ urlpatterns = [
     path('bookid/<int:id>/', views.bookid),
     path('add_publisher/', views.add_publisher),
     path('publishers/', views.publisher),
-    path('login/', account_view.login)
+    path('login/', account_view.login),
+    path('logout/', account_view.logout)
 
 ]
