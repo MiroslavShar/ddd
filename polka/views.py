@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
-from polka.models import Person, Book
+from polka.models import Person, Book, Publisher
 
 def index(request):
     return render(request, 'base.html')
@@ -71,3 +71,16 @@ def look_book(request):
 def bookid(request, id):
     b = Book.objects.get(id=id)
     return render(request, 'bookid.html', {'book':b})
+
+def add_publisher(request):
+    if request.method == "GET":
+        publishers = Publisher.objects.all()
+        response = render(request, 'add_publisher.html', context={'publisher': publishers})
+        return response
+    else:
+        name = request.POST['name']
+        city = request.POST.get('city')
+        p = Publisher(name=name, city=city)
+        p.save()
+        return render(request, 'publishernew.html', context={'publisher': p})
+        # return HttpResponse(f'probujesz dodac książkę o nazwie {title} i autorze{author} do bazy')

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block zawartosc %}
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="name" placeholder="Nazwa wydawcy">
+    <input type="text" name="city" placeholder="Miasto">
+    <input type="submit">
+</form>
+{% endblock %}
