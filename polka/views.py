@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 # Create your views here.
-from polka.models import Person, Book, Publisher, Cart
+from polka.models import Person, Book, Publisher, Cart, CartItem
 
 
 def index(request):
@@ -120,7 +120,10 @@ def add_book_to_cart(request, book_id):
     book = Book.objects.get(pk=book_id)
     user = Person.objects.get(pk=user_id)
     cart, created = Cart.objects.get_or_create(owner=user)
-    cart.books.add(book)
+    cartitem, created = CartItem.objects.get_or_create(book=book, cart=cart)
+    if not created:
+        cartitem.amount +=1
+        cartitem.save()
     messages.add_message(request, messages.INFO, f"Udało się dodać książke do koszyka{book.title}")
     return redirect('/books/')
 

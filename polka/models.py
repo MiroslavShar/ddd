@@ -27,7 +27,6 @@ class Publisher(models.Model):
 class Cart(models.Model):
     owner = models.OneToOneField(Person, on_delete=models.CASCADE)
     books = models.ManyToManyField(Book)
-    books2 = models.ManyToManyField(Book, through='CartItem', related_name='booknew')
 
 class CartItem(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
