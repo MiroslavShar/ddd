@@ -24,7 +24,7 @@ def loginView(request):
         password = request.POST.get('password')
         user = authenticate(username, password)
         if user is None:
-            return redirect('/login/')
+            return redirect('login')
         login(request, user)
         return redirect(url_redirect)
 
@@ -38,7 +38,7 @@ def login_by_cookie(request):
         password = request.POST.get('password')
         user = authenticate(username, password)
         if user is None:
-            return redirect('/login/')
+            return redirect('login')
         # login(request, user)
         httpresponse = redirect(url_redirect)
         httpresponse.set_cookie('user_id', user.id)

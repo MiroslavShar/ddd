@@ -12,8 +12,8 @@
 Publishers - <br>
 
 <ul>
-    {% for p in publishers %}
-        <li><a>{{ p.id }} {{ p.name }} {{ p.city }}</a></li>
+    {% for publisher in publishers %}
+        <li><a href="{% url 'update_publisher' publisher.id %}"> {{ publisher }}</a></li>
     {% endfor %}
 
 </ul>

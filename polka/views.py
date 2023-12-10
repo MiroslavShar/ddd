@@ -1,6 +1,8 @@
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse
+from django.views import View
 
 # Create your views here.
 from polka.models import Person, Book, Publisher, Cart, CartItem
@@ -116,7 +118,9 @@ def publisher(request):
 def add_book_to_cart(request, book_id):
     user_id = request.session.get('user_id')
     if user_id is None:
-        return redirect(f'/login/?next=/add_book_to_cart/{book_id}')
+        login_url = reverse('login')
+        add_book_to_cart_url = reverse('add_to_cart', kwargs={'book_id'})
+        return redirect(f'{login_url}?next={add_book_to_cart_url}')
     book = Book.objects.get(pk=book_id)
     user = Person.objects.get(pk=user_id)
     cart, created = Cart.objects.get_or_create(owner=user)
@@ -125,15 +129,33 @@ def add_book_to_cart(request, book_id):
         cartitem.amount +=1
         cartitem.save()
     messages.add_message(request, messages.INFO, f"Udało się dodać książke do koszyka{book.title}")
-    return redirect('/books/')
+    return redirect('show_books')
 
 
 def show_cart(request):
     user_id = request.session.get('user_id')
     if user_id is None:
-        return redirect(f'/login/?next=/cart')
+        login_url = reverse('login')
+        cart_url = reverse('show_cart')
+        return redirect(f'{login_url}?next={cart_url}')
     cart = Cart.objects.get(owner_id=user_id)
     return render(request, 'cart_list.html', {'cart': cart})
+
+class UpdatePublisherView(View):
+
+    def get(self, request, pk):
+        publisher = Publisher.objects.get(pk=pk)
+        return render(request, 'add_publisher.html', {'publisher':publisher})
+
+    def post(self, request, pk):
+        publisher = Publisher.objects.get(pk=pk)
+        name = request.POST.get('name')
+        city = request.POST.get('city')
+        publisher.name = name
+        publisher.city = city
+        publisher.save()
+        return redirect('show_publisher')
+
 
 
 
