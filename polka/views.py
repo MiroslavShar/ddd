@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
@@ -118,9 +119,19 @@ def add_book_to_cart(request, book_id):
         return redirect(f'/login/?next=/add_book_to_cart/{book_id}')
     book = Book.objects.get(pk=book_id)
     user = Person.objects.get(pk=user_id)
-    cart, created = Cart.objects.get_or_create(user=user)
+    cart, created = Cart.objects.get_or_create(owner=user)
     cart.books.add(book)
+    messages.add_message(request, messages.INFO, f"Udało się dodać książke do koszyka{book.title}")
     return redirect('/books/')
+
+
+def show_cart(request):
+    user_id = request.session.get('user_id')
+    if user_id is None:
+        return redirect(f'/login/?next=/cart')
+    cart = Cart.objects.get(owner_id=user_id)
+    return render(request, 'cart_list.html', {'cart': cart})
+
 
 
 
