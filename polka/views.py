@@ -1,11 +1,20 @@
+from django.contrib import messages
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from django.views import View
 
 # Create your views here.
-from polka.models import Person, Book
+from polka.models import Person, Book, Publisher, Cart, CartItem
+
 
 def index(request):
-    return render(request, 'base.html')
+    user_id = request.session.get('user_id')
+    if user_id is not None:
+        user = Person.objects.get(pk = user_id)
+    else:
+        user = "dupa"
+    return render(request, 'base.html', {'osoba' : user})
 
 def hello_django(request):
     return HttpResponse("Witaj Django")
@@ -43,6 +52,12 @@ def dodaj_osobe(request):
 
 def wyswietlanie_osob(request):
     osoby = Person.objects.all()
+    first_name = request.GET.get('first_name', '')
+    last_name = request.GET.get('last_name', '')
+    if first_name != '':
+        osoby = osoby.filter(first_name__icontains=first_name)
+    if last_name != '':
+        osoby = osoby.filter(last_name__icontains=last_name)
     return render(request, 'Cosby.html', context={'persons':osoby})
 
 def osoba(request, id):
@@ -66,8 +81,82 @@ def add_book(request):
 
 def look_book(request):
     books = Book.objects.all()
-    return render(request, 'books.html', context={'books':books})
+    author = Person.objects.all()
+    author_id = request.GET.get('author', '')
+    title = request.GET.get('title', '')
+    if author_id != '':
+        books = books.filter(author_id = author_id)
+    books = books.filter(title__icontains = title)
+    return render(request, 'books.html', context={'books':books, 'author':author})
 
 def bookid(request, id):
     b = Book.objects.get(id=id)
     return render(request, 'bookid.html', {'book':b})
+
+def add_publisher(request):
+    if request.method == "GET":
+        publishers = Publisher.objects.all()
+        response = render(request, 'add_publisher.html', context={'publisher': publishers})
+        return response
+    else:
+        name = request.POST['name']
+        city = request.POST.get('city')
+        p = Publisher(name=name, city=city)
+        p.save()
+        return render(request, 'publishernew.html', context={'publisher': p})
+
+def publisher(request):
+    publishers = Publisher.objects.all()
+    name = request.GET.get('name', '')
+    city = request.GET.get('city', '')
+    if city != '':
+        publishers = publishers.filter(city__icontains=city)
+    if name != '':
+        publishers = publishers.filter(name__icontains=name)
+    return render(request, 'publishers.html', context={'publishers': publishers})
+
+def add_book_to_cart(request, book_id):
+    user_id = request.session.get('user_id')
+    if user_id is None:
+        login_url = reverse('login')
+        add_book_to_cart_url = reverse('add_to_cart', kwargs={'book_id'})
+        return redirect(f'{login_url}?next={add_book_to_cart_url}')
+    book = Book.objects.get(pk=book_id)
+    user = Person.objects.get(pk=user_id)
+    cart, created = Cart.objects.get_or_create(owner=user)
+    cartitem, created = CartItem.objects.get_or_create(book=book, cart=cart)
+    if not created:
+        cartitem.amount +=1
+        cartitem.save()
+    messages.add_message(request, messages.INFO, f"Udało się dodać książke do koszyka{book.title}")
+    return redirect('show_books')
+
+
+def show_cart(request):
+    user_id = request.session.get('user_id')
+    if user_id is None:
+        login_url = reverse('login')
+        cart_url = reverse('show_cart')
+        return redirect(f'{login_url}?next={cart_url}')
+    cart = Cart.objects.get(owner_id=user_id)
+    return render(request, 'cart_list.html', {'cart': cart})
+
+class UpdatePublisherView(View):
+
+    def get(self, request, pk):
+        publisher = Publisher.objects.get(pk=pk)
+        return render(request, 'add_publisher.html', {'publisher':publisher})
+
+    def post(self, request, pk):
+        publisher = Publisher.objects.get(pk=pk)
+        name = request.POST.get('name')
+        city = request.POST.get('city')
+        publisher.name = name
+        publisher.city = city
+        publisher.save()
+        return redirect('show_publisher')
+
+
+
+
+

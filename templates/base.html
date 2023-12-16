@@ -44,24 +44,40 @@
 <div class="header">
     <div>
         <ul class="links">
-            <li><a href="/dodaj_osobe/">
+            <li><a href='{% url 'dodaj_osobę' %}'>
                 <button>Dodaj Osobe</button>
             </a></li>
-            <li><a href="/osoby/">
+            <li><a href="{% url 'show_person' %}">
                 <button>Wyswietl osoby</button>
             </a></li>
-            <li><a href="/add_book/">
+            <li><a href="{% url 'add_book' %}">
                 <button>Dodaj książkę</button>
             </a></li>
-            <li><a href="/books/">
+            <li><a href="{% url 'show_books' %}">
                 <button>Wyswietl książki</button>
             </a></li>
+            <li><a href="{% url 'add_publisher' %}">
+                <button>Dodaj wydawcę</button>
+            </a></li>
+              <li><a href="{% url 'show_publisher' %}">
+                <button>Wyświetl wydawców</button>
+            </a></li>
+              <li><a href="{% url 'login' %}">
+                <button>Login</button>
+            </a></li>
+            <li><a href="{% url 'logout' %}">
+                <button>Logout</button>
+            </a></li>
+            <li><a href="{% url 'show_cart' %}">
+                <button>Koszyk</button>
+            </a></li>
+
         </ul>
     </div>
 </div>
 <div class="content">
     {% block zawartosc %}
-        sdfsdf
+        {{ osoba }}
     {% endblock %}
 
 

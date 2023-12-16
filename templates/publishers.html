@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block zawartosc %}
+<form>
+    Użyj naszej wyszukiwarki
+    <input type="text" name="name" placeholder="Nazwa wydawnictwa">
+    <input type="text" name="city" placeholder="Miasto">
+    <input type="submit">
+
+</form>
+
+
+Publishers - <br>
+
+<ul>
+    {% for publisher in publishers %}
+        <li><a href="{% url 'update_publisher' publisher.id %}"> {{ publisher }}</a></li>
+    {% endfor %}
+
+</ul>
+{% endblock %}

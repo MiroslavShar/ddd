@@ -1,9 +1,23 @@
 {% extends 'base.html' %}
 {% block zawartosc %}
-Książki - <br>
-<ul>
-    {% for p in books %}
-        <li><a href="/bookid/{{ p.id }}/">{{ p.id }} {{ p.title }} {{ p.author }}</a></li>
+    <form>
+    <input type="text" name="title" placeholder="Tytuł">
+    <select name="author">
+        <option value="">-----------</option>
+        {% for author in author %}
+        <option value="{{ author.id }}"> {{ author }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit">
+    </form>
+    {%  for message in messages %}
+    {{ message }} <br>
     {% endfor %}
-</ul>
-{% endblock %}
+    Książki - <br>
+    <ul>
+        {% for p in books %}
+            <li><a href="/bookid/{{ p.id }}/">{{ p.id }} {{ p.title }} {{ p.author }}</a></li>
+            <a href="/add_book_to_cart/{{ p.id }}/">+</a>
+        {% endfor %}
+    </ul>
+    {% endblock %}

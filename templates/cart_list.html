@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block zawartosc %}
+    <ul>
+    {% for cartitem in cart.cartitem_set.all %}
+        <li>{{ cartitem.book }} - {{ cartitem.amount }}
+        <a href="/remove_book_from_cart/{{ book.id }}/">-</a>
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}
